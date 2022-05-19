@@ -26,4 +26,15 @@ defmodule WatwitterWeb.PostComponentTest do
     assert html =~ "@#{user.username}"
     assert html =~ user.avatar_url
   end
+
+  test "renders like button and count" do
+    post = insert(:post, likes_count: 259)
+
+    html = render_component(PostComponent, post: post)
+
+    assert html =~ "data-role=\"like-button\""
+    assert html =~ "data-role=\"like-count\""
+    assert html =~ "259"
+  end
+
 end
