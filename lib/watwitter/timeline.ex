@@ -132,7 +132,9 @@ defmodule Watwitter.Timeline do
     |> Like.changeset(%{post_id: post.id, user_id: user.id})
     |> Repo.insert!()
 
-    get_post!(post.id)
+    updated_post = get_post!(post.id)
+    broadcast_post_updated(updated_post)
+    updated_post
   end
 
   @doc """
@@ -158,6 +160,10 @@ defmodule Watwitter.Timeline do
 
   def broadcast_post_created(post) do
     Phoenix.PubSub.broadcast(Watwitter.PubSub, @timeline_topic, {:post_created, post})
+  end
+
+  def broadcast_post_updated(post) do
+    Phoenix.PubSub.broadcast(Watwitter.PubSub, @timeline_topic, {:post_updated, post})
   end
 
   defp broadcast({:error, _} = error, _), do: error
